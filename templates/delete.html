@@ -1,0 +1,14 @@
+{% extends "bootstrap/base.html" %}
+
+
+{% block title %}delete successful{% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ movie.title }} has been deleted successfully</h1>
+    <button class="btn-light"><a href="{{ url_for('home') }}">Back to Home</a></button>
+{% endblock %}

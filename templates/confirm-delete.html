@@ -1,0 +1,18 @@
+{% extends "bootstrap/base.html" %}
+
+
+{% block title %}Confirm Delete{% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>You are about to delete {{ movie.title }}.</h1>
+    <h2>This Action will be final, are you sure? </h2>
+    <button class="btn-warning"><a href="{{ url_for('delete', m_id=movie.id) }}">Yes</a></button>
+    <button class="delete-button"><a href="{{ url_for('home') }}">No</a></button>
+</div>
+
+{% endblock %}
