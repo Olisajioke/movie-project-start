@@ -1,0 +1,13 @@
+.container{
+    margin-top: 79px;
+    margin-bottom: 79px;
+    padding: 50px;
+    color: thistle;
+    background-image: linear-gradient(to right, green, lightgreen);
+}
+
+
+
+body{
+    background-image: linear-gradient(to right, rgb(5, 175, 175), rgb(18, 161, 218)) !important;
+}

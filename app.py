@@ -35,7 +35,7 @@ class myform(FlaskForm):
     title = StringField('Movie Title', validators=[DataRequired()])
     year = StringField('Movie Year', validators=[DataRequired()])
     description = StringField('Movie Description', validators=[DataRequired()])
-    rating = StringField('Movie Rating', validators=[DataRequired()])
+    rating = StringField('Movie Rating(out of 10)', validators=[DataRequired()])
     ranking = StringField('Movie Ranking', validators=[DataRequired()])
     review = StringField('Movie Review', validators=[DataRequired()])
     img_url = StringField('Movie Image URL', validators=[DataRequired()])
@@ -72,14 +72,16 @@ def add():
 
 @app.route("/confirm_delete/<int:m_id>", methods=["GET", "POST"])
 def confirm_delete(m_id):
-    movie_to_delete = Movie.query.get(m_id)
+    #movie_to_delete = Movie.query.get(m_id)
+    movie_to_delete = db.session.get(Movie, m_id)
     return render_template("confirm-delete.html", movie=movie_to_delete)
 
 
 # This route will allow you to delete a movie from the database
 @app.route("/delete/<int:m_id>", methods=["GET", "POST"])
 def delete(m_id):
-    movie_to_delete = Movie.query.get(m_id)
+    #movie_to_delete = Movie.query.get(m_id)
+    movie_to_delete = db.session.get(Movie, m_id)
     if request.method == "GET":
         db.session.delete(movie_to_delete)
         db.session.commit()
@@ -89,12 +91,12 @@ def delete(m_id):
 #edit movie
 @app.route("/edit/<int:m_id>", methods=["GET", "POST"])
 def edit(m_id):
-    movie_to_edit = Movie.query.get(m_id)
+    #movie_to_edit = Movie.query.get(m_id)
+    movie_to_edit = db.session.get(Movie, m_id)
     if request.method == "POST":
         movie_to_edit.rating = request.form['rating']
         movie_to_edit.review = request.form['review']
         movie_to_edit.img_url = request.form['img_url']
-        movie_to_edit.description = request.form['description']
         db.session.commit()
         return redirect(url_for('home'))
     return render_template("edit.html", movie=movie_to_edit, form=myform())
