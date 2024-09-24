@@ -89,9 +89,7 @@ def edit(m_id):
     #movie_to_edit = Movie.query.get(m_id)
     form = myform()
     movie_to_add = MovieId(m_id)
-    
-    movie_edit = Movie.query.get_or_404(m_id)
-
+    mid = movie_to_add.myid
     #print(f"the movie title is {movie_to_add.title}")
     if request.method == "POST":
         try:
@@ -113,10 +111,9 @@ def edit(m_id):
             db.session.add(movie_to_edit)
             db.session.commit()
             return redirect(url_for('home'))
-        
         except Exception as e:
             return f"An error occurred: {e}. We can't add {title} to the database."
-    return render_template("edit.html", movie=movie_to_add, movie_edit=movie_edit, form=myform())
+    return render_template("edit.html", movie=movie_to_add,form=myform())
 
 
 
