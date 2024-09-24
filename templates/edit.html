@@ -15,11 +15,10 @@
   <h1 class="heading">{{ movie.title }}</h1>
     <p class="description">Edit {{ movie.title }} Details</p>
     <div class="container">
-      <form method="POST" action="{{ url_for('edit', m_id = movie.id) }}">
+      <form method="POST" action="{{ url_for('edit', m_id = movie_edit) }}">
           {{ form.hidden_tag() }}
           {{ wtf.form_field(form.rating) }}
           {{ wtf.form_field(form.review) }}
-          {{ wtf.form_field(form.img_url) }}
           <button class="btn btn-lg">Submit</button>
       </form>
   <hr>

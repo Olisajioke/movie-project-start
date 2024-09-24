@@ -17,6 +17,9 @@
 </div>
 <div class="content">
     <h1 class="heading">Add a Movie</h1>
-    {{ wtf.quick_form(form) }}
+    <form method="POST" action="{{ url_for('add') }}">
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.title) }}
+        <button class="btn btn-lg">Submit</button>
 </div>
 {% endblock %}
