@@ -14,9 +14,9 @@
 <div class="container">
   <h1 class="heading">Select Movie</h1>
   {% if movies %}
-    {% for title, year, my_id in movies %}
+    {% for movie in movies %}
       <p>
-        <a href="{{ url_for('edit', m_id=my_id) }}"> {{ title }}  -  {{ year }}</a>
+        <a href="{{ url_for('get_movie', m_id=movie[2]) }}"> {{ movie[0] }}  -  {{ movie[1] }}</a>
       </p>
     {% endfor %}
   {% else %}

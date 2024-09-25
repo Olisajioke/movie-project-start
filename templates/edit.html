@@ -15,12 +15,7 @@
   <h1 class="heading">{{ movie.title }}</h1>
     <p class="description">Edit {{ movie.title }} Details</p>
     <div class="container">
-      <form method="POST" action="{{ url_for('edit', m_id = movie.myid) }}">
-          {{ form.hidden_tag() }}
-          {{ wtf.form_field(form.rating) }}
-          {{ wtf.form_field(form.review) }}
-          <button class="btn btn-lg">Submit</button>
-      </form>
+      {{ wtf.quick_form(form, novalidate=True) }}
   <hr>
   <button class="btn-light"><a href="{{ url_for('home') }}">Home Page</a></button>
 </div>

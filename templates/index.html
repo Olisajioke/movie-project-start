@@ -34,7 +34,7 @@
             <p class="overview">
                 {{ movie['description'] }}
             </p>
-            <a href="{{ url_for('edit', m_id=movie['id']) }}" class="button">Update</a>
+            <a href="{{ url_for('edit', num=movie['id']) }}" class="button">Update</a>
             <a href="{{ url_for('confirm_delete', m_id=movie['id']) }}"" class="button delete-button">Delete</a>
           </div>
         </div>

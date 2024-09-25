@@ -28,24 +28,25 @@ class Movie(db.Model):
     title = db.Column(db.String(250), unique=True, nullable=False)
     year = db.Column(db.Integer, unique=False, nullable=False)
     description = db.Column(db.String(1000), unique=False, nullable=False)
-    rating = db.Column(db.Float, unique=False, nullable=False)
+    rating = db.Column(db.Float, unique=False, nullable=True)
     ranking = db.Column(db.Integer, unique=False, nullable=True)
-    review = db.Column(db.String(1000), unique=False, nullable=False)
+    review = db.Column(db.String(1000), unique=False, nullable=True)
     img_url = db.Column(db.String(250), unique=False, nullable=False)
 
 
 class myform(FlaskForm):
     """Create a Movie form"""
-    title = StringField('Movie Title', validators=[DataRequired()])
-    year = StringField('Movie Year', validators=[DataRequired()])
-    description = StringField('Movie Description', validators=[DataRequired()])
     rating = StringField('Movie Rating(out of 10)', validators=[DataRequired()])
-    ranking = StringField('Movie Ranking', validators=[DataRequired()])
+    #ranking = StringField('Movie Ranking', validators=[DataRequired()])
     review = StringField('Movie Review', validators=[DataRequired()])
-    img_url = StringField('Movie Image URL', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
 
+
+class AddMovies(FlaskForm):
+    """Create a Movie form"""
+    title = StringField('Movie Title', validators=[DataRequired()])
+    submit = SubmitField('Add Movie')
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -53,10 +54,9 @@ def home():
     return render_template("index.html", movies=movies)
 
 
-
 @app.route("/add", methods=["GET", "POST"])
 def add():
-    form = myform()
+    form = AddMovies()
     if request.method == "POST":
         movie3444 = form.title.data
         print(f"The movie you tried to add is: {movie3444}")
@@ -83,38 +83,55 @@ def delete(m_id):
     return render_template("delete.html", movie=movie_to_delete)
 
 
-#edit movie
-@app.route("/edit/<int:m_id>", methods=["GET", "POST"])
-def edit(m_id):
-    #movie_to_edit = Movie.query.get(m_id)
+@app.route('/edit/<int:num>', methods=['GET', 'POST'])
+def edit(num):
+    form = myform()
+
+    # First, check if a query parameter 'num' was passed via the URL
+    num_from_query = request.args.get('num', None)
+    
+    # Use the query parameter if it's present, otherwise fall back to the URL parameter
+    if num_from_query:
+        num = int(num_from_query)
+
+    # Fetch the movie object based on the final 'num' value
+    movie_to_update = db.session.get(Movie, num)
+
+    if request.method == "POST" and form.validate_on_submit():
+        # Update the movie's rating and review from the form
+        movie_to_update.rating = form.rating.data
+        movie_to_update.review = form.review.data
+
+        # Commit the changes to the database
+        db.session.commit()
+        return redirect(url_for('home'))
+
+    return render_template('edit.html', form=form, movie=movie_to_update)
+
+
+#get movie path
+@app.route("/get_movie/<int:m_id>", methods=["GET", "POST"])
+def get_movie(m_id):
     form = myform()
     movie_to_add = MovieId(m_id)
-    mid = movie_to_add.myid
-    #print(f"the movie title is {movie_to_add.title}")
+    print(f"the movie title is {movie_to_add.title}")
     if request.method == "POST":
-        try:
-            title = movie_to_add.title
-            year = movie_to_add.release_date
-            description = movie_to_add.overview
-            img_url = f" https://image.tmdb.org/t/p/w500/{movie_to_add.poster_path}"
-            rating = form.rating.data
-            review = form.review.data
-            print(title, year, description, rating, review, img_url)
-            movie_to_edit = Movie(
-                title=title,
-                year=year,
-                description=description,
-                rating=rating,
-                review=review,
-                img_url=img_url
-            )
-            db.session.add(movie_to_edit)
-            db.session.commit()
-            return redirect(url_for('home'))
-        except Exception as e:
-            return f"An error occurred: {e}. We can't add {title} to the database."
-    return render_template("edit.html", movie=movie_to_add,form=myform())
-
+        title = movie_to_add.title
+        year = movie_to_add.release_date
+        description = movie_to_add.overview
+        img_url = f" https://image.tmdb.org/t/p/w500/{movie_to_add.poster_path}"
+        print(title, year, description, img_url)
+        movie_to_edit = Movie(
+            title=title,
+            year=year,
+            description=description,
+            img_url=img_url
+        )
+        db.session.add(movie_to_edit)
+        db.session.commit()
+        return redirect(url_for('edit', num=movie_to_edit.id))
+    print(f"Name: {movie_to_add.title}, ID: {movie_to_add.myid}")
+    return render_template("edit.html", movie=movie_to_add, form=form)
 
 
 
@@ -125,13 +142,6 @@ def select():
     movies = MovieList(movie=moveee)
     print(movies)
     return render_template("select.html",movies=movies.movie_list)
-
-
-
-
-
-
-
 
 
 with app.app_context():
