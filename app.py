@@ -46,12 +46,25 @@ class myform(FlaskForm):
 class AddMovies(FlaskForm):
     """Create a Movie form"""
     title = StringField('Movie Title', validators=[DataRequired()])
-    submit = SubmitField('Add Movie')
+    submit = SubmitField('Add Movie')   
 
 @app.route("/", methods=["GET", "POST"])
 def home():
     movies = Movie.query.all()
-    return render_template("index.html", movies=movies)
+
+    # Sort movies by rating in descending order (highest rating first)
+    sorted_movies = sorted(movies, key=lambda movie: movie.rating, reverse=True)
+    
+    # Assign new IDs based on the sorted order
+    for index, movie in enumerate(sorted_movies, start=1):
+        movie.ranking = index  # Assign rank starting from 1 based on rating
+        db.session.commit()
+
+    # Fetch all movies again after updating the Rankings
+    mymovies = Movie.query.all()
+    mysorted_movies = sorted(mymovies, key=lambda movie: movie.ranking, reverse=True)
+
+    return render_template("index.html", movies=mysorted_movies)
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -93,6 +106,8 @@ def edit(num):
     # Use the query parameter if it's present, otherwise fall back to the URL parameter
     if num_from_query:
         num = int(num_from_query)
+    else:
+        num = num
 
     # Fetch the movie object based on the final 'num' value
     movie_to_update = db.session.get(Movie, num)
@@ -112,10 +127,10 @@ def edit(num):
 #get movie path
 @app.route("/get_movie/<int:m_id>", methods=["GET", "POST"])
 def get_movie(m_id):
-    form = myform()
+    #form = myform()
     movie_to_add = MovieId(m_id)
     print(f"the movie title is {movie_to_add.title}")
-    if request.method == "POST":
+    if request.method == "GET":
         title = movie_to_add.title
         year = movie_to_add.release_date
         description = movie_to_add.overview
@@ -131,7 +146,7 @@ def get_movie(m_id):
         db.session.commit()
         return redirect(url_for('edit', num=movie_to_edit.id))
     print(f"Name: {movie_to_add.title}, ID: {movie_to_add.myid}")
-    return render_template("edit.html", movie=movie_to_add, form=form)
+    return render_template("edit.html", movie=movie_to_add, form=myform())
 
 
 
