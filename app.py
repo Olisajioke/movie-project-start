@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect
 import requests
 from movieapi import MovieApi, MovieList, MovieId
+import time
 
 
 app = Flask(__name__)
@@ -48,23 +49,30 @@ class AddMovies(FlaskForm):
     title = StringField('Movie Title', validators=[DataRequired()])
     submit = SubmitField('Add Movie')   
 
+
+
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.remove()  # Clean up the session at the end of the request
+
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     movies = Movie.query.all()
+    sorted_movies = sorted(movies, key=lambda movie: movie.rating if movie.rating is not None else 0, reverse=True)
 
-    # Sort movies by rating in descending order (highest rating first)
-    sorted_movies = sorted(movies, key=lambda movie: movie.rating, reverse=True)
-    
-    # Assign new IDs based on the sorted order
+    #Sort movies by rating in descending order (highest rating first)
     for index, movie in enumerate(sorted_movies, start=1):
         movie.ranking = index  # Assign rank starting from 1 based on rating
-        db.session.commit()
-
-    # Fetch all movies again after updating the Rankings
+        
+    db.session.commit()
+        
     mymovies = Movie.query.all()
+
     mysorted_movies = sorted(mymovies, key=lambda movie: movie.ranking, reverse=True)
 
     return render_template("index.html", movies=mysorted_movies)
+
 
 
 @app.route("/add", methods=["GET", "POST"])
@@ -102,13 +110,11 @@ def edit(num):
 
     # First, check if a query parameter 'num' was passed via the URL
     num_from_query = request.args.get('num', None)
-    
     # Use the query parameter if it's present, otherwise fall back to the URL parameter
     if num_from_query:
         num = int(num_from_query)
     else:
         num = num
-
     # Fetch the movie object based on the final 'num' value
     movie_to_update = db.session.get(Movie, num)
 
@@ -130,7 +136,12 @@ def get_movie(m_id):
     #form = myform()
     movie_to_add = MovieId(m_id)
     print(f"the movie title is {movie_to_add.title}")
-    if request.method == "GET":
+    #existing_movie = db.session.get(Movie, m_id)
+    #time.sleep(5)
+    #existing_movie_title   = existing_movie.title
+    #print(f"the existing movie title is {existing_movie_title}")
+    if  request.method == "GET": 
+        #if existing_movie_title != None: 
         title = movie_to_add.title
         year = movie_to_add.release_date
         description = movie_to_add.overview

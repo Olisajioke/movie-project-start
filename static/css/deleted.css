@@ -3,11 +3,13 @@
     margin-bottom: 79px;
     padding: 50px;
     color: thistle;
+    background-color: aliceblue;
     background-image: linear-gradient(to right, green, lightgreen);
 }
 
 
 
 body{
+    background-color: aquamarine;
     background-image: linear-gradient(to right, rgb(5, 175, 175), rgb(18, 161, 218)) !important;
 }
