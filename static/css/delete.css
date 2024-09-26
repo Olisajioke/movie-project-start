@@ -2,14 +2,15 @@
     margin-top: 100px;
     margin-bottom: 100px;
     padding: 50px;
-    color: rgb(15, 2, 15);
-    background-color: #f2f2f2;
+    color: rgb(231, 226, 231);
+    background-color: #722203;
+    padding: 50px;
     border-radius: 10px;
     box-shadow: 0 0 10px 0 rgba(223, 200, 200, 0.1);
-    background-image: linear-gradient(to right, #f06767, rgb(197, 95, 95), rgb(209, 124, 124));
-}
+    
 
 
 body{
-    background-image: linear-gradient(to right, rgb(170, 186, 216), rgb(153, 223, 250), rgb(203, 203, 226)) !important;
+    background-color: wheat !important;
+    padding: 50px;
 }
