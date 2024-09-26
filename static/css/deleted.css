@@ -2,14 +2,14 @@
     margin-top: 79px;
     margin-bottom: 79px;
     padding: 50px;
-    color: thistle;
+    color: rgb(22, 3, 22);
     background-color: aliceblue;
-    background-image: linear-gradient(to right, green, lightgreen);
+    background-image: linear-gradient(to right, rgb(174, 230, 174), lightgreen);
 }
 
 
 
 body{
     background-color: aquamarine;
-    background-image: linear-gradient(to right, rgb(5, 175, 175), rgb(18, 161, 218)) !important;
+    background-image: linear-gradient(to right, rgb(5, 175, 175), rgb(136, 205, 233), aquamarine) !important;
 }
